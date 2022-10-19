@@ -844,7 +844,7 @@ class Tello:
     def set_network_ports(self, state_packet_port: int, video_stream_port: int):
         """Sets the ports for state packets and video streaming
         While you can use this command to reconfigure the Tello this library currently does not support
-        non-default ports (TODO!)
+        non-default ports
         """
         cmd = 'port {} {}'.format(state_packet_port, video_stream_port)
         self.send_control_command(cmd)
