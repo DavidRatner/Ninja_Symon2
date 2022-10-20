@@ -317,14 +317,14 @@ class DetectUtils:
     def RecognizeShapesFromListWords(listofwords):
         colors_list = ['green', 'orange', 'pink', 'brown', 'red', 'yellow', 'blue', 'purple']
         shapes_list = ["circle", "octagon", "pentagon", "rectangle", "rhombus", "square", "star", "triangle"]
-        colorshap = DetectUtils.ColorOrShape(listofwords, colors_list, shapes_list)
-        if colorshap is None:
+        colorshape = DetectUtils.ColorOrShape(listofwords, colors_list, shapes_list)
+        if colorshape is None:
             return None
-        elif colorshap == 0:
+        elif colorshape == 0:
             finallist = DetectUtils.PickClosestWords(listofwords, colors_list)
             finallist.insert(0, 0)
             return finallist
-        elif colorshap == 1:
+        elif colorshape == 1:
             finallist = DetectUtils.PickClosestWords(listofwords, shapes_list)
             finallist.insert(0, 1)
             return finallist
@@ -487,7 +487,7 @@ class DetectScreenInFrame:
                 #color_tuple = DetectUtils.GetBBLocationColor([xc, yc, w, h], cv2.cvtColor(self.screen, cv2.COLOR_BGR2RGB))
                 aspect_ratio = w / h
                 if 2 >= aspect_ratio >= 0.5:
-                    DetectUtils.PlotCv2ImageWithPlt(self.screen[yc:yc + h, xc:xc + w], "before first filter")
+                    #DetectUtils.PlotCv2ImageWithPlt(self.screen[yc:yc + h, xc:xc + w], "before first filter")
                     if (100 > w >= 20 and 100 > h >= 20) and hierarchy[0][i][3] != -1:
                         #DetectUtils.PlotCv2ImageWithPlt(self.screen[yc:yc + h, xc:xc + w], "before second filter")
                         if (hierarchy[0][i][3] not in cropped_shapes_index) and (hierarchy[0][i][3] not in filtered_duplicate_shapes_index):
@@ -504,7 +504,7 @@ class DetectScreenInFrame:
             filtered_cropped_shapes_bb = []
             filtered_cropped_shapes_color = []
             for i in range(len(cropped_shapes)):
-                DetectUtils.PlotCv2ImageWithPlt(cropped_shapes[i], 'number or shape')
+                #DetectUtils.PlotCv2ImageWithPlt(cropped_shapes[i], 'number or shape')
                 (xc, yc, w, h) = cv2.boundingRect(cropped_shapes_contour[i])
                 if w / h > 0.95: # 0.8
                     if yc >= 0.6*self.screen.shape[0]:

@@ -139,6 +139,7 @@ class TelloControl:
         if success:
             datalist.append(data)
             while True:  # needs to get the same data couple of times
+
                     self.DetectScreenOnPosition()  # takes another picture
                     success, data = self.AnalyzePicture()  # Analyze new picture
                     if success:
@@ -162,6 +163,60 @@ class TelloControl:
             return False, final_data, moved_close
 
     def AnalyzePicture(self):
+        result = []
+        shapes, shapes_color, shapes_bb, numbers = self.ImageProcessing.DetectfeaturesInSilverScreen()
+        # IF Detected shapes or Text Boxes Or Qr code Box
+        IsTextQrCode = True
+        for idx, color in enumerate(shapes_color):  # Determine whether all shapes in screen are black and white
+            if abs(int(color[0]) - int(color[1])) + abs(int(color[0]) - int(color[2]) + abs(int(color[1]) - int(color[2]))) > 40:
+                IsTextQrCode = False
+        if IsTextQrCode:  # IF QR Code or Text
+            if self.debug:
+                print(f"The Picture Contains Qr Code or Text")
+                logging.info(f"The Picture Contains Qr Code or Text")
+            Qrflag, value = DetectUtils.read_qr_code(self.ImageProcessing.screen)
+            if Qrflag:
+                if self.debug:
+                    print("QR Code screen")
+                    print(f"output string is {value}")
+                    logging.info(f"QR Code screen ,output string is {value} ")
+                return True, value
+            for i in range(len(shapes)):  # searching again for QR Code in shapes
+                # name = f"shape {i} "
+                # if print_shapes_by_order:
+                #     DetectUtils.PlotCv2ImageWithPlt(shapes[i], name)
+                flag, value = DetectUtils.read_qr_code(shapes[i])
+                if flag:
+                    if self.debug:
+                        print("QR Code screen")
+                        print(f"output string is {value}")
+                        logging.info(f"QR Code screen ,output string is {value} ")
+                    return True, value
+            # trying to get text
+            value = self.ImageProcessing.DetectWordsInSilverScreen()
+            if self.debug:
+                print("Text screen")
+                print(f"output string is {value}")
+                logging.info(f"Text screen, output string is {value}")
+            if len(value) > 0:
+                return True, value
+            else:
+                return False, value
+
+        else:  # Colored Shapes
+            ordered_shapes, ordered_shapes_color, ordered_shapes_bb = self.ImageProcessing.OrderShapes(shapes, shapes_color, shapes_bb)
+            list_ordered_colors = DetectUtils.PrepareReturnList(ordered_shapes_color, outputflag=0)
+            if self.debug:
+                print(f"output string is {list_ordered_colors}")
+                logging.info(f"output string is {list_ordered_colors}")
+            result = list_ordered_colors
+
+        if len(result) > 0:
+            return True, result
+        else:
+            return False, result
+
+    def AnalyzePictureOLD(self):
         result = []
         shapes, shapes_color, shapes_bb, numbers = self.ImageProcessing.DetectfeaturesInSilverScreen()
         # IF Detected shapes or Text Boxes Or Qr code Box

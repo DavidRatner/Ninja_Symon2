@@ -24,14 +24,16 @@ from Main_Tello_Simon import TelloControl
 
 
 timing_img = 10
-dirpath = r"C:\Users\davidra\Desktop\NINJA_RAFAEL\Ninja_Symon2\first_try8"
-filename = "frame_0_Screen detected, screen mode is 2" + ".jpg"
+dirpath = r"C:\Users\davidra\Desktop\NINJA_RAFAEL\Ninja_Symon2\first_try20"
+filename = "frame_1_Screen detected, screen mode is 2" + ".jpg"
 full_path = os.path.join(dirpath, filename)
 img = cv2.imread(full_path)
 cv2.imshow("photo", img)  # optional display photo
 cv2.waitKey(0)
 debugTello = TelloControl(dirpath=dirpath, debug=True)
 debugTello.ImageProcessing.original_image = img
-
+# PlotCv2ImageWithPlt(self.ImageProcessing.screen, 'screen to analyze')
 debugTello.ImageProcessing.DetectScreen(True)
-#debugTello.AnalyzePicture()
+flag, value = debugTello.AnalyzePicture()
+print(flag)
+
